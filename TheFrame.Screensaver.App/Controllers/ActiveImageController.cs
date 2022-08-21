@@ -5,16 +5,38 @@ namespace TheFrame.Screensaver.App.Controllers {
 	[Route("api/active-image")]
 	[ApiController]
 	public class ActiveImageController : ControllerBase {
-		public ActiveImageController() {
+		private readonly IConfiguration _config;
 
+		public ActiveImageController(IConfiguration configuration) {
+			_config = configuration;
 		}
 
 		[HttpGet]
 		public async Task<string> GetActiveImageUrl(string user, string token) {
+			if(IsIPAuthenticated())
+				return GetAuthenticatedImageUrl();
+
 			return GetDefaultImageUrl();
 		}
 
+		[HttpGet("client-ip")]
+		public string GetClientIp() {
+			return Request.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+		}
+		
+		public bool IsIPAuthenticated() {
+			string ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
+			string allowedIp = _config["ALLOWED_CLIENT_IP"];
+
+			return ip.Equals(allowedIp);
+		}
+
 		public string GetDefaultImageUrl() {
+			var suffix = "nature1";
+			return $"https://raw.githubusercontent.com/ddhatman/theframe-roku-screensaver/master/assets/tv-background-{suffix}.jpg";
+		}
+
+		public string GetAuthenticatedImageUrl() {
 			var suffix = "nature1";
 
 			var dt = DateTime.Today;
