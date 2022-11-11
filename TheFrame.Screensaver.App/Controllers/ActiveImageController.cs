@@ -39,7 +39,7 @@ namespace TheFrame.Screensaver.App.Controllers {
 		public string GetAuthenticatedImageUrl() {
 			var suffix = "nature1";
 
-			var dt = DateTime.Today;
+			var dt = DateTime.UtcNow.AddHours(-7);
 
 			switch(dt.Month) {
 				case 1:
@@ -92,7 +92,10 @@ namespace TheFrame.Screensaver.App.Controllers {
 						suffix = "fallpumpkins";
 					break;
 				case 11:
-					suffix = "fallpumpkins";
+					if((int)dt.DayOfWeek - dt.Day < 0)
+						suffix = "fallpumpkins";
+					else
+						suffix = "disneyxmas";
 					break;
 				case 12:
 					if(dt.Day < 28)
