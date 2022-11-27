@@ -25,10 +25,14 @@ namespace TheFrame.Screensaver.App.Controllers {
 		}
 		
 		public bool IsIPAuthenticated() {
+#if DEBUG
+			return true;
+#else
 			string ip = Request.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "";
 			string allowedIp = _config["ALLOWED_CLIENT_IP"];
 
 			return ip.Equals(allowedIp);
+#endif
 		}
 
 		public string GetDefaultImageUrl() {
@@ -92,7 +96,7 @@ namespace TheFrame.Screensaver.App.Controllers {
 						suffix = "fallpumpkins";
 					break;
 				case 11:
-					if((int)dt.DayOfWeek - dt.Day < 0)
+					if((((int)dt.DayOfWeek) - dt.Day) > 0)
 						suffix = "fallpumpkins";
 					else
 						suffix = "disneyxmas";
